@@ -1,5 +1,6 @@
 package com.example.leadmanagement.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name="salesagents") // It will create a table named "salesagents" in database
+@JsonIgnoreProperties("leads")
 @AllArgsConstructor
 @NoArgsConstructor
 public class SalesAgent {

@@ -13,9 +13,6 @@ import com.example.leadmanagement.persistence.repository.SalesAgentRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -26,7 +23,11 @@ public class LeadService {
     private final SalesAgentRepository salesAgentRepository;
     private final LeadMapper leadMapper;
 
-    public LeadService(LeadRepository leadRepository, CustomerRepository customerRepository, ProductRepository productRepository, SalesAgentRepository salesAgentRepository, LeadMapper leadMapper) {
+    public LeadService(LeadRepository leadRepository,
+                       CustomerRepository customerRepository,
+                       ProductRepository productRepository,
+                       SalesAgentRepository salesAgentRepository,
+                       LeadMapper leadMapper) {
         this.leadRepository = leadRepository;
         this.customerRepository = customerRepository;
         this.productRepository = productRepository;
@@ -46,61 +47,109 @@ public class LeadService {
     }
 
     public LeadDto createLead(LeadDto leadDto) {
+
         Lead newLead = leadMapper.mapToEntity(leadDto);
-        //get customer, product, and salesagent;
-//        Customer leadCustomer = customerRepository.findById(customerId)
-//                .orElseThrow(()-> new EntityNotFoundException("Customer not found with id: "+customerId));
-//        Product leadProduct = productRepository.findById(productId)
-//                .orElseThrow(()-> new EntityNotFoundException("Product not found with id: "+productId));
-//        SalesAgent leadSalesAgent = salesAgentRepository.findById(salesAgentId)
-//                .orElseThrow(()-> new EntityNotFoundException("Product not found with id: "+salesAgentId));
-
-        //calculate total amount using product price and customer discount
-        double totalAmount = (leadDto.getQuantity())*(leadDto.getProduct().getPrice())*(1-leadDto.getCustomer().getLoyaltyCard().getDiscount()/100);
-
-        newLead.setTotalAmount(totalAmount);
-        newLead.setCustomer(leadDto.getCustomer());
-        newLead.setProduct(leadDto.getProduct());
-        newLead.setSalesAgent(leadDto.getSalesAgent());
-        newLead.setDate(LocalDateTime.now());
-
-
         return leadMapper.mapToDto(leadRepository.save(newLead));
     }
 
     public LeadDto replaceLead(long id, LeadDto leadDto) {
-        Lead lead = leadRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Lead with id " + id + " not found."));
+        Lead existingLead = getLeadById(id);
 
-        lead.setQuantity(leadDto.getQuantity());
-        lead.setTotalAmount(leadDto.getTotalAmount());
-        lead.setDate(leadDto.getDate());
-        lead.setCustomer(leadDto.getCustomer());
-        lead.setProduct(leadDto.getProduct());
-        lead.setSalesAgent(leadDto.getSalesAgent());
+        Customer customer = customerRepository
+                .findById(leadDto.getCustomerId())
+                .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
 
-        Lead replacedLead = leadRepository.save(lead);
-        return leadMapper.mapToDto(replacedLead);
+        Product product = productRepository
+                .findById(leadDto.getProductId())
+                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
+        SalesAgent salesAgent = salesAgentRepository
+                .findById(leadDto.getSalesAgentId())
+                .orElseThrow(() -> new EntityNotFoundException("Sales Agent not found"));
+
+        existingLead.setQuantity(leadDto.getQuantity());
+
+        double totalAmountWithDiscount = (leadDto.getQuantity() * product.getPrice()) *
+                (1 - customer.getLoyaltyCard().getDiscount() / 100);
+
+        existingLead.setTotalAmount(totalAmountWithDiscount);
+        existingLead.setDate(leadDto.getDate());
+        existingLead.setCustomer(customer);
+        existingLead.setProduct(product);
+        existingLead.setSalesAgent(salesAgent);
+
+        return leadMapper.mapToDto(leadRepository.save(existingLead));
     }
 
     public LeadDto updateLead(long id, LeadDto leadDto) {
-        Lead lead = leadRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Lead with id " + id + " not found."));
+        Lead existingLead = getLeadById(id);
 
-        if (leadDto.getQuantity() == 0.0) lead.setQuantity(leadDto.getQuantity());
-        if (leadDto.getTotalAmount() == 0.0) lead.setTotalAmount((leadDto.getTotalAmount()));
-        if (leadDto.getDate() != null) lead.setDate((leadDto.getDate()));
-        if (leadDto.getCustomer() != null) lead.setCustomer(leadDto.getCustomer());
-        if (leadDto.getProduct() != null) lead.setProduct(leadDto.getProduct());
-        if (leadDto.getSalesAgent() != null) lead.setSalesAgent(leadDto.getSalesAgent());
+        double price;
+        double discount;
 
-        Lead updatedLead = leadRepository.save(lead);
-        return leadMapper.mapToDto(updatedLead);
 
+        //customer.
+        // if customer in payload is empty use existing customer
+        if (leadDto.getCustomerId() != 0) {
+            Customer customer = customerRepository
+                    .findById(leadDto.getCustomerId())
+                    .orElse(null);
+            existingLead.setCustomer(customer);
+            discount = customer.getLoyaltyCard().getDiscount();
+
+        } else {
+            Customer customer = customerRepository
+                    .findById(existingLead.getCustomer().getId())
+                    .orElse(null);
+            existingLead.setCustomer(customer);
+            discount = customer.getLoyaltyCard().getDiscount();
+        }
+
+        //product
+        //if product in payload is empty, use existing product.
+
+        if (leadDto.getProductId() != 0) {
+            Product product = productRepository
+                    .findById(leadDto.getProductId())
+                    .orElse(null);
+            existingLead.setProduct(product);
+            price = product.getPrice();
+
+        } else {
+            Product product = productRepository
+                    .findById(existingLead.getProduct().getId())
+                    .orElse(null);
+            existingLead.setProduct(product);
+            price = product.getPrice();
+        }
+
+        //sales agent
+
+        if (leadDto.getSalesAgentId() != 0) {
+            SalesAgent salesAgent = salesAgentRepository
+                    .findById(leadDto.getSalesAgentId())
+                    .orElse(null);
+            existingLead.setSalesAgent(salesAgent);
+        }
+
+        if (leadDto.getQuantity() != 0) {
+            existingLead.setQuantity(leadDto.getQuantity());
+        }
+
+        double totalAmountWithDiscount = (existingLead.getQuantity() * price) *
+                (1 - discount / 100);
+
+        existingLead.setTotalAmount(totalAmountWithDiscount);
+
+        if (leadDto.getDate() != null) {
+            existingLead.setDate(leadDto.getDate());
+        }
+
+        return leadMapper.mapToDto(leadRepository.save(existingLead));
     }
 
-    public void deleteLeadById(long id){
+
+    public void deleteLeadById(long id) {
         leadRepository.deleteById(id);
     }
 }

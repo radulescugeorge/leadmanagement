@@ -1,6 +1,7 @@
 package com.example.leadmanagement.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name="customers") //It will create a Table named "customers" in database.
+@JsonIgnoreProperties("leads")
 public class Customer {
 
 

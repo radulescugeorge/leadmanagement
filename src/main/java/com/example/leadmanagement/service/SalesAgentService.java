@@ -78,7 +78,7 @@ public class SalesAgentService {
         }
 
         if(salesAgentDto.getEmail() != null){
-            existingSalesAgent.setName(salesAgentDto.getEmail());
+            existingSalesAgent.setEmail(salesAgentDto.getEmail());
         }
 
         return salesAgentMapper.mapToDto(salesAgentRepository.save(existingSalesAgent));
