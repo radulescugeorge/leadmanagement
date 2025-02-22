@@ -3,7 +3,6 @@ package com.example.leadmanagement.controller;
 import com.example.leadmanagement.dto.LeadDto;
 import com.example.leadmanagement.mapper.impl.LeadMapper;
 import com.example.leadmanagement.persistence.entity.Lead;
-import com.example.leadmanagement.persistence.repository.LeadRepository;
 import com.example.leadmanagement.service.LeadService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,11 +29,12 @@ public class LeadController {
         return ResponseEntity.ok(leadService.getLeads());
     }
 
+    //CHECK THIS !!! i've changed from lead to LeadDTO.
     @GetMapping("/{id}")
     public ResponseEntity<LeadDto> getLeadById(@PathVariable long id) {
 
         Lead lead = leadService.getLeadById(id);
-        if(lead == null){
+        if (lead == null) {
             return ResponseEntity.notFound().build();
         }
 
@@ -45,7 +45,7 @@ public class LeadController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createLead( @RequestBody LeadDto leadDto) {
+    public ResponseEntity<String> createLead(@RequestBody LeadDto leadDto) {
 
         leadService.createLead(leadDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("New lead added");
@@ -53,22 +53,36 @@ public class LeadController {
 
     }
 
-        @PutMapping("/replace/{id}")
-        public ResponseEntity<LeadDto> replaceLead(@PathVariable long id,
-                                                   @RequestBody LeadDto leadDto){
+    @PutMapping("/replace/{id}")
+    public ResponseEntity<LeadDto> replaceLead(@PathVariable long id,
+                                               @RequestBody LeadDto leadDto) {
         return ResponseEntity.ok(leadService.replaceLead(id, leadDto));
-        }
-
-
-
-        @PatchMapping("/update/{id}")
-        public ResponseEntity<LeadDto> updateLead ( @PathVariable long id,
-                                                    @RequestBody LeadDto leadDto){
-            return ResponseEntity.ok(leadService.updateLead(id, leadDto));
-        }
-
-        @DeleteMapping("/{id}")
-        public void deleteLead ( @PathVariable long id){
-            leadService.deleteLeadById(id);
-        }
     }
+
+
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<LeadDto> updateLead(@PathVariable long id,
+                                              @RequestBody LeadDto leadDto) {
+        return ResponseEntity.ok(leadService.updateLead(id, leadDto));
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteLead(@PathVariable long id) {
+        leadService.deleteLeadById(id);
+    }
+
+    @GetMapping("/salesagent/{salesAgentId}")
+    public List<LeadDto> getAllLeadsBySalesAgent(@PathVariable long salesAgentId) {
+        return  leadService.getAllLeadsBySalesAgent(salesAgentId);
+    }
+    @GetMapping("/customer/{customerId}")
+    public List<LeadDto> getAllLeadsByCustomer(@PathVariable long customerId){
+        return leadService.getAllLeadsByCustomer(customerId);
+    }
+    @GetMapping("/product/{productId}")
+    public ResponseEntity <List<LeadDto>> getAllLeadsByProduct(@PathVariable long productId){
+        return ResponseEntity.ok(leadService.getAllLeadsByProduct(productId));
+    }
+
+
+}

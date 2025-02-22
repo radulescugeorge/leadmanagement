@@ -62,6 +62,14 @@ public class CustomerService {
                 .toList();
     }
 
+    public List<CustomerDto> getCustomersByName(String name){
+        List<Customer> list = customerRepository
+                .findByNameContainingIgnoreCase(name);
+        return list.stream()
+                .map(customerMapper::mapToDto)
+                .toList();
+    }
+
     public Customer getCustomerById(long id) {
         return customerRepository.findById(id).orElse(null);
     }

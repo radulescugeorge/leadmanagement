@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lead Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Add New Customer</h2>
+    <form th:action="@{/customers/save}" method="post" th:object="${customer}">
+        <div class="mb-3">
+            <label class="form-label">Customer Name</label>
+            <input type="text" class="form-control" th:field="*{name}" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Customer City</label>
+            <input type="text" class="form-control" th:field="*{city}" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Customer Phone</label>
+            <input type="text" class="form-control" th:field="*{phone}" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Customer email</label>
+            <input type="text" class="form-control" th:field="*{email}" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Customer Loyalty Card Serial Number</label>
+            <input type="text" class="form-control" th:field="*{loyaltyCard.serialNumber}" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Customer Discount</label>
+            <input type="number" step="0.01" class="form-control" th:field="*{loyaltyCard.discount}" required>
+        </div>
+
+        <button type="submit" class="btn btn-success">Save</button>
+        <a href="/customers" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+</body>
+</html>

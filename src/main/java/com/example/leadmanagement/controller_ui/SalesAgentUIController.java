@@ -1,4 +1,4 @@
-package com.example.leadmanagement.controller;
+package com.example.leadmanagement.controller_ui;
 
 import com.example.leadmanagement.dto.SalesAgentDto;
 import com.example.leadmanagement.mapper.impl.SalesAgentMapper;

@@ -1,7 +1,9 @@
 package com.example.leadmanagement.service;
 
 import com.example.leadmanagement.dto.LeadDto;
+import com.example.leadmanagement.dto.LeadViewDto;
 import com.example.leadmanagement.mapper.impl.LeadMapper;
+import com.example.leadmanagement.mapper.impl.LeadViewMapper;
 import com.example.leadmanagement.persistence.entity.Customer;
 import com.example.leadmanagement.persistence.entity.Lead;
 import com.example.leadmanagement.persistence.entity.Product;
@@ -13,7 +15,10 @@ import com.example.leadmanagement.persistence.repository.SalesAgentRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+
 
 @Service
 public class LeadService {
@@ -22,23 +27,70 @@ public class LeadService {
     private final ProductRepository productRepository;
     private final SalesAgentRepository salesAgentRepository;
     private final LeadMapper leadMapper;
+    private final LeadViewMapper leadViewMapper;
 
     public LeadService(LeadRepository leadRepository,
                        CustomerRepository customerRepository,
                        ProductRepository productRepository,
                        SalesAgentRepository salesAgentRepository,
-                       LeadMapper leadMapper) {
+                       LeadMapper leadMapper, LeadViewMapper leadViewMapper) {
         this.leadRepository = leadRepository;
         this.customerRepository = customerRepository;
         this.productRepository = productRepository;
         this.salesAgentRepository = salesAgentRepository;
         this.leadMapper = leadMapper;
+        this.leadViewMapper = leadViewMapper;
     }
 
 
     public List<LeadDto> getLeads() {
         return leadRepository.findAll().stream()
                 .map(leadMapper::mapToDto)
+                .toList();
+    }
+
+    public List<LeadDto> getAllLeadsBySalesAgent(long salesAgentId) {
+        return leadRepository.findBySalesAgentId(salesAgentId)
+                .stream()
+                .map(leadMapper::mapToDto)
+                .toList();
+    }
+
+    public List<LeadViewDto> getAllViewLeadsBySalesAgent(Long salesAgentId) {
+        return leadRepository.findBySalesAgentId(salesAgentId).stream()
+                .map(leadViewMapper::mapToDto)
+                .toList();
+    }
+
+    public List<LeadDto> getAllLeadsByProduct(long productId) {
+        return leadRepository.findByProductId(productId).stream()
+                .map(leadMapper::mapToDto)
+                .toList();
+    }
+
+    public List<LeadViewDto> getAllViewLeadsByProduct(Long productId) {
+        return leadRepository.findByProductId(productId).stream()
+                .map(leadViewMapper::mapToDto)
+                .toList();
+    }
+
+    public List<LeadDto> getAllLeadsByCustomer(long customerId) {
+        return leadRepository.findByCustomerId(customerId)
+                .stream()
+                .map(leadMapper::mapToDto)
+                .toList();
+    }
+
+    public List<LeadViewDto> getAllViewLeadsByCustomer(Long customerId) {
+        return leadRepository.findByCustomerId(customerId).stream()
+                .map(leadViewMapper::mapToDto)
+                .toList();
+    }
+
+
+    public List<LeadViewDto> getAllViewLeadsByDate(LocalDate date) {
+        return leadRepository.findByDate(date).stream()
+                .map(leadViewMapper::mapToDto)
                 .toList();
     }
 
@@ -84,43 +136,45 @@ public class LeadService {
     public LeadDto updateLead(long id, LeadDto leadDto) {
         Lead existingLead = getLeadById(id);
 
-        double price;
-        double discount;
+        double price =0d;
+        double discount =0d;
 
 
         //customer.
         // if customer in payload is empty use existing customer
         if (leadDto.getCustomerId() != 0) {
-            Customer customer = customerRepository
-                    .findById(leadDto.getCustomerId())
-                    .orElse(null);
-            existingLead.setCustomer(customer);
-            discount = customer.getLoyaltyCard().getDiscount();
-
+            Optional<Customer> customerOpt = customerRepository
+                    .findById(leadDto.getCustomerId());
+            if (customerOpt.isPresent()) {
+                existingLead.setCustomer(customerOpt.get());
+                discount = customerOpt.get().getLoyaltyCard().getDiscount();
+            }
         } else {
-            Customer customer = customerRepository
-                    .findById(existingLead.getCustomer().getId())
-                    .orElse(null);
-            existingLead.setCustomer(customer);
-            discount = customer.getLoyaltyCard().getDiscount();
+            Optional<Customer> customerOpt = customerRepository
+                    .findById(existingLead.getCustomer().getId());
+            if (customerOpt.isPresent()) {
+                existingLead.setCustomer(customerOpt.get());
+                discount = customerOpt.get().getLoyaltyCard().getDiscount();
+            }
         }
 
         //product
         //if product in payload is empty, use existing product.
 
         if (leadDto.getProductId() != 0) {
-            Product product = productRepository
-                    .findById(leadDto.getProductId())
-                    .orElse(null);
-            existingLead.setProduct(product);
-            price = product.getPrice();
-
+            Optional<Product> productOpt = productRepository
+                    .findById(leadDto.getProductId());
+            if (productOpt.isPresent()) {
+                existingLead.setProduct(productOpt.get());
+                price = productOpt.get().getPrice();
+            }
         } else {
-            Product product = productRepository
-                    .findById(existingLead.getProduct().getId())
-                    .orElse(null);
-            existingLead.setProduct(product);
-            price = product.getPrice();
+            Optional<Product> productOpt = productRepository
+                    .findById(existingLead.getProduct().getId());
+            if(productOpt.isPresent()) {
+                existingLead.setProduct(productOpt.get());
+                price = productOpt.get().getPrice();
+            }
         }
 
         //sales agent
@@ -152,4 +206,36 @@ public class LeadService {
     public void deleteLeadById(long id) {
         leadRepository.deleteById(id);
     }
+
+    public List<LeadViewDto> getViewLeads() {
+        List<Lead> leads = leadRepository.findAll(); // Fetch leads from DB
+
+        return leads.stream().map(lead -> {
+            LeadViewDto dto = new LeadViewDto();
+            dto.setId(lead.getId());
+            dto.setDate(lead.getDate());
+            dto.setQuantity(lead.getQuantity());
+            dto.setTotalAmount(lead.getTotalAmount());
+
+            // Set product ID
+            dto.setProductId(lead.getProduct() != null ? lead.getProduct().getId() : null);
+            dto.setCustomerId(lead.getCustomer() != null ? lead.getCustomer().getId() : null);
+            dto.setSalesAgentId(lead.getSalesAgent() != null ? lead.getSalesAgent().getId() : null);
+
+            // Set product name
+            dto.setProductName(lead.getProduct() != null ? lead.getProduct().getName() : "Unknown Product");
+            dto.setCustomerName(lead.getCustomer() != null ? lead.getCustomer().getName() : "Unknown Customer");
+            dto.setSalesAgentName(lead.getSalesAgent() != null ? lead.getSalesAgent().getName() : "Unknown Sales Agent");
+
+            return dto;
+        }).toList();
+    }
+
+    public LeadViewDto createViewLead(LeadViewDto leadViewDto) {
+
+        Lead newLead = leadViewMapper.mapToEntity(leadViewDto);
+        return leadViewMapper.mapToDto(leadRepository.save(newLead));
+    }
+
+
 }

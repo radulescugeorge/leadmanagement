@@ -24,12 +24,13 @@ public class ProductService {
                 .toList();
     }
 
-    public List<ProductDto> getProductByName(String name){
-        List<Product> list = productRepository.findProductByName(name);
-        return list.stream()
+    public List<ProductDto> getProductsByName(String name) {
+        return productRepository.findByNameContainingIgnoreCase(name)
+                .stream()
                 .map(productMapper::mapToDto)
                 .toList();
     }
+
 
     public Product getProductById(long id){
         return productRepository.findById(id).orElse(null);

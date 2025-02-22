@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Sales Agents</title>
+    <title>Lead Management</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body class="container mt-5">
-<h1 class="mb-4 text-center">Sales Agents</h1>
+<h1 class="mb-4">Sales Agents</h1>
 
-<!-- Search Form and Back to Full List Button in One Row -->
 <div class="d-flex mb-3">
     <form class="d-flex" method="get" th:action="@{/salesagents/search}">
         <input type="text" name="phone" class="form-control me-2" th:value="${phone}" placeholder="Search by phone">
-        <button type="submit" class="btn btn-primary me-2">Search</button>
+        <button type="submit" class="btn btn-outline-primary">Search</button>
     </form>
-    <a href="/salesagents" class="btn btn-secondary">Back to Full List</a>
+</div>
+<div>
+    <a href="/salesagents/add" class="btn btn-primary mb-3">Add New Agent</a>
+    <a href="/salesagents" class="btn btn-primary mb-3">Back to Full List</a>
+    <a href="/" class ="btn btn-primary mb-3">Home Page</a>
 </div>
 
-<a href="/salesagents/add" class="btn btn-primary mb-3">Add New Agent</a>
-
-<table class="table table-bordered table-striped">
-    <thead class="table-dark">
+<table class="table table-bordered">
+    <thead>
     <tr>
         <th>Name</th>
         <th>Email</th>
@@ -33,8 +34,9 @@
         <td th:text="${agent.email}"></td>
         <td th:text="${agent.phone}"></td>
         <td>
-            <a th:href="@{/salesagents/edit/{id}(id=${agent.id})}" class="btn btn-danger btn-sm">Edit</a>
-            <a th:href="@{/salesagents/delete/{id}(id=${agent.id})}" class="btn btn-danger btn-sm">Delete</a>
+            <a th:href="@{/salesagents/edit/{id}(id=${agent.id})}" class="btn btn-warning btn-sm">Edit</a>
+            <a th:href="@{/salesagents/delete/{id}(id=${agent.id})}" class="btn btn-danger btn-sm"
+               onclick="return confirm('Are you sure you want to delete this sales agent ?');">Delete</a>
         </td>
     </tr>
     </tbody>

@@ -2,7 +2,10 @@ package com.example.leadmanagement.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
@@ -11,7 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class LeadDto {
+public class LeadViewDto {
 
     private long id;
 
@@ -20,8 +23,13 @@ public class LeadDto {
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
+    private String customerName;
     private long customerId;
+    private String productName;
     private long productId;
+    private String salesAgentName;
     private long salesAgentId;
+
+
 
 }

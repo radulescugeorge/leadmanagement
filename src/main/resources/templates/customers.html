@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lead Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="mb-4">Customers List</h2>
+
+
+    <form th:action="@{/customers/search}" method="get" class="d-flex mb-3">
+        <input type="text" class="form-control me-2" name="name" placeholder="Search by name"
+               th:value="${searchQuery}">
+        <button type="submit" class="btn btn-outline-primary">Search</button>
+    </form>
+    <a href="/customers/add" class="btn btn-primary mb-3">Add New Customer</a>
+    <a href="/customers" class="btn btn btn-primary mb-3">Back to Full List</a>
+    <a href="/" class ="btn btn-primary mb-3">Home Page</a>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>City</th>
+            <th>Phone</th>
+            <th>email</th>
+            <th>Loyalty Card ID</th>
+            <th>Serial Number</th>
+            <th>Discount</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="customer : ${customers}">
+            <td th:text="${customer.id}"></td>
+            <td th:text="${customer.name}"></td>
+            <td th:text="${customer.city}"></td>
+            <td th:text="${customer.phone}"></td>
+            <td th:text="${customer.email}"></td>
+            <td th:text="${customer.loyaltyCard.id}"></td>
+            <td th:text="${customer.loyaltyCard.serialNumber}"></td>
+            <td th:text="${customer.loyaltyCard.discount}"></td>
+            <td>
+                <a th:href="@{/customers/edit/{id}(id=${customer.id})}" class="btn btn-warning btn-sm">Edit</a>
+                <a th:href="@{/customers/delete/{id}(id=${customer.id})}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Are you sure you want to delete this customer?');">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
