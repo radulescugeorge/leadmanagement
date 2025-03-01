@@ -35,9 +35,9 @@ DELETE:	/api/products/delete{id}
 
 SALES AGENT
 
-GET: 	/api/salesagent
-GET:	/api/salesagent/{id}
-POST:	/api/salesagent
-PUT:	/api/salesagent/replace/{id}
-PATCH:	/api/salesagent/update/{id}
-DELETE:	/api/salesagent/delete/{id}
+GET: 	/api/salesagents
+GET:	/api/salesagents/{id}
+POST:	/api/salesagents
+PUT:	/api/salesagents/replace/{id}
+PATCH:	/api/salesagents/update/{id}
+DELETE:	/api/salesagents/delete/{id}
