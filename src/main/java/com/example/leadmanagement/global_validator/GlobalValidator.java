@@ -1,8 +1,11 @@
 package com.example.leadmanagement.global_validator;
 
-import com.example.leadmanagement.exception_handlers.InvalidDataException;
-
 public class GlobalValidator {
+
+    private GlobalValidator() {
+        throw new UnsupportedOperationException("leadmanagement.global_validator is a utility class.");
+    }
+
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9+_.-]+$";
     private static final String PHONE_REGEX = "^(07)[0-9]{8}$";
 
@@ -14,4 +17,7 @@ public class GlobalValidator {
         return phone != null && phone.matches(PHONE_REGEX);
     }
 
+    public static boolean isQuantityValidGV(Double quantity){
+       return quantity > 0.0;
+    }
 }

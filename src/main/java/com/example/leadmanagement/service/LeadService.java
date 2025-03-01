@@ -2,6 +2,7 @@ package com.example.leadmanagement.service;
 
 import com.example.leadmanagement.dto.LeadDto;
 import com.example.leadmanagement.dto.LeadViewDto;
+import com.example.leadmanagement.exception_handlers.InvalidDataException;
 import com.example.leadmanagement.mapper.impl.LeadMapper;
 import com.example.leadmanagement.mapper.impl.LeadViewMapper;
 import com.example.leadmanagement.persistence.entity.Customer;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import static com.example.leadmanagement.global_validator.GlobalValidator.isQuantityValidGV;
 
 
 @Service
@@ -87,7 +90,7 @@ public class LeadService {
                 .toList();
     }
 
-    public List<LeadViewDto> getAllViewLeadsById(Long id){
+    public List<LeadViewDto> getAllViewLeadsById(Long id) {
         return leadRepository.findById(id).stream()
                 .map(leadViewMapper::mapToDto)
                 .toList();
@@ -105,6 +108,10 @@ public class LeadService {
     }
 
     public LeadDto createLead(LeadDto leadDto) {
+
+        if (!isQuantityValidGV(leadDto.getQuantity())) {
+            throw new InvalidDataException("Quantity must be greater than zero.");
+        }
 
         Lead newLead = leadMapper.mapToEntity(leadDto);
         return leadMapper.mapToDto(leadRepository.save(newLead));
@@ -125,6 +132,10 @@ public class LeadService {
                 .findById(leadDto.getSalesAgentId())
                 .orElseThrow(() -> new EntityNotFoundException("Sales Agent not found"));
 
+        if (!isQuantityValidGV(leadDto.getQuantity())) {
+            throw new InvalidDataException("Quantity must be greater than zero.");
+        }
+
         existingLead.setQuantity(leadDto.getQuantity());
 
         double totalAmountWithDiscount = (leadDto.getQuantity() * product.getPrice()) *
@@ -142,8 +153,8 @@ public class LeadService {
     public LeadDto updateLead(long id, LeadDto leadDto) {
         Lead existingLead = getLeadById(id);
 
-        double price =0d;
-        double discount =0d;
+        double price = 0d;
+        double discount = 0d;
 
 
         //customer.
@@ -177,7 +188,7 @@ public class LeadService {
         } else {
             Optional<Product> productOpt = productRepository
                     .findById(existingLead.getProduct().getId());
-            if(productOpt.isPresent()) {
+            if (productOpt.isPresent()) {
                 existingLead.setProduct(productOpt.get());
                 price = productOpt.get().getPrice();
             }
@@ -192,8 +203,10 @@ public class LeadService {
             existingLead.setSalesAgent(salesAgent);
         }
 
-        if (leadDto.getQuantity() != 0) {
+        if (leadDto.getQuantity() > 0) {
             existingLead.setQuantity(leadDto.getQuantity());
+        } else if(!isQuantityValidGV(leadDto.getQuantity())){
+            throw new InvalidDataException("Quantity must be greater than zero.");
         }
 
         double totalAmountWithDiscount = (existingLead.getQuantity() * price) *
@@ -238,6 +251,10 @@ public class LeadService {
     }
 
     public LeadViewDto createViewLead(LeadViewDto leadViewDto) {
+
+        if (!isQuantityValidGV(leadViewDto.getQuantity())) {
+            throw new InvalidDataException("Quantity must be greater than zero.");
+        }
 
         Lead newLead = leadViewMapper.mapToEntity(leadViewDto);
         return leadViewMapper.mapToDto(leadRepository.save(newLead));

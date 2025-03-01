@@ -61,7 +61,7 @@
             <td th:text="${lead.date}"></td>
             <td th:text="${lead.productName}"></td>
             <td th:text="${lead.quantity}"></td>
-            <td th:text="${lead.totalAmount}"></td>
+            <td th:text="${#numbers.formatDecimal(lead.totalAmount, 1, 2)}"></td>
             <td th:text="${lead.customerName}"></td>
             <td th:text="${lead.salesAgentName}"></td>
         </tr>

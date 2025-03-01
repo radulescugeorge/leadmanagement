@@ -8,6 +8,11 @@
 <div class="container mt-5">
     <h2>Add New Lead</h2>
     <form th:action="@{/leads/save}" method="post" th:object="${lead}">
+
+        <div th:if="${error}" class="alert alert-danger">
+            <p th:text="${error}">Error message</p>
+        </div>
+
         <div class="mb-3">
             <label class="form-label">Date (yyyy-mm-dd)</label>
             <input type="text" class="form-control" th:field="*{date}" required>

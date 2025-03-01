@@ -2,6 +2,7 @@ package com.example.leadmanagement.controller_ui;
 
 import com.example.leadmanagement.dto.LeadDto;
 import com.example.leadmanagement.dto.LeadViewDto;
+import com.example.leadmanagement.exception_handlers.InvalidDataException;
 import com.example.leadmanagement.mapper.impl.LeadMapper;
 import com.example.leadmanagement.mapper.impl.LeadViewMapper;
 import com.example.leadmanagement.persistence.repository.CustomerRepository;
@@ -58,9 +59,20 @@ public class LeadUIController {
     }
 
     @PostMapping("/save")
-    public String saveViewLead(@ModelAttribute LeadViewDto leadViewDto){
-        leadService.createViewLead(leadViewDto);
-        return "redirect:/leads";
+    public String saveViewLead(@ModelAttribute LeadViewDto leadViewDto,
+                                Model model){
+        try{
+            leadService.createViewLead(leadViewDto);
+            return "redirect:/leads";
+        } catch (InvalidDataException e){
+            model.addAttribute("error",e.getMessage());
+            model.addAttribute("lead",leadViewDto);
+            model.addAttribute("products", productRepository.findAll());
+            model.addAttribute("customers", customerRepository.findAll());
+            model.addAttribute("salesAgents", salesAgentRepository.findAll());
+            return "add-lead";
+        }
+
     }
 
     @GetMapping("/delete/{id}")
@@ -83,9 +95,19 @@ public class LeadUIController {
     }
 
     @PostMapping("/update")
-    public String updateLead(@ModelAttribute LeadDto leadDto){
-        leadService.updateLead(leadDto.getId(), leadDto);
-        return "redirect:/leads";
+    public String updateLead(@ModelAttribute LeadDto leadDto,
+                             Model model){
+        try {
+            leadService.updateLead(leadDto.getId(), leadDto);
+            return "redirect:/leads";
+        } catch (InvalidDataException e){
+            model.addAttribute("error",e.getMessage());
+            model.addAttribute("lead",leadDto);
+            model.addAttribute("products", productRepository.findAll());
+            model.addAttribute("customers", customerRepository.findAll());
+            model.addAttribute("salesAgents", salesAgentRepository.findAll());
+            return "edit-lead";
+        }
     }
 
     @GetMapping("/search")
