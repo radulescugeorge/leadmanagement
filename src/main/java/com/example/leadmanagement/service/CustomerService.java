@@ -1,14 +1,7 @@
-/**
- * I do have more loyalty cards than customers. We need to implement a method that when a card is replaced,
- * the old one should be deleted.
- * <p>
- * [SOLVED:] I put a condition in Controller and if one of the fields are empty
- * Also, PATCH method (replace customer) should work if only all the fields in the DTO are completed
- * (including loyalty card). If you need to modify only one field, should use update instead.
- */
 package com.example.leadmanagement.service;
 
 import com.example.leadmanagement.dto.CustomerDto;
+import com.example.leadmanagement.exception_handlers.InvalidDataException;
 import com.example.leadmanagement.mapper.impl.CustomerMapper;
 import com.example.leadmanagement.mapper.impl.LoyaltyCardMapper;
 import com.example.leadmanagement.persistence.entity.Customer;
@@ -19,6 +12,9 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.example.leadmanagement.global_validator.GlobalValidator.isValidEmailGV;
+import static com.example.leadmanagement.global_validator.GlobalValidator.isValidPhoneGV;
 
 @Service
 public class CustomerService {
@@ -40,7 +36,7 @@ public class CustomerService {
 
     public CustomerDto createCustomerWithLoyaltyCard(CustomerDto customerDto) {
 
-        Customer customer = customerMapper.mapToEntity(customerDto);
+        Customer customer = customerMapper.mapToEntity(customerDto); //validation for email and phone are done in mapper
 
         LoyaltyCard loyaltyCard = loyaltyCardMapper.mapToEntity(customerDto.getLoyaltyCard());
         LoyaltyCard savedLoyaltyCard = loyaltyCardRepository.save(loyaltyCard);
@@ -94,8 +90,25 @@ public class CustomerService {
         // if found, check every field in DTO . If it's not null, then update.
         if (customerDto.getName() != null) customer.setName(customerDto.getName());
         if (customerDto.getCity() != null) customer.setCity(customerDto.getCity());
-        if (customerDto.getPhone() != null) customer.setPhone(customerDto.getPhone());
-        if (customerDto.getEmail() != null) customer.setEmail(customerDto.getEmail());
+
+        if (customerDto.getPhone() != null) {
+            String dtoPhone = customerDto.getPhone();
+            if (!isValidPhoneGV(dtoPhone)) {
+                throw new InvalidDataException("Invalid phone format: [" + dtoPhone
+                        + "]. Phone must start with \"07\" and have 10 digits.");
+            }
+            customer.setPhone(dtoPhone);
+        }
+
+
+        if (customerDto.getEmail() != null){
+            String dtoEmail = customerDto.getEmail();
+            if (!isValidEmailGV(dtoEmail)) {
+                throw new InvalidDataException("Invalid email format: [" + dtoEmail
+                        + "]. Email should be x@x.x");
+            }
+            customer.setEmail(dtoEmail);
+        }
 
 
         //Check the DTO in the request if LoyaltyCard is null. If it's not null then update.

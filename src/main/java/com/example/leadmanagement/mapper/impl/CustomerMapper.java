@@ -1,9 +1,13 @@
 package com.example.leadmanagement.mapper.impl;
 
 import com.example.leadmanagement.dto.CustomerDto;
+import com.example.leadmanagement.exception_handlers.InvalidDataException;
 import com.example.leadmanagement.mapper.ObjectMapper;
 import com.example.leadmanagement.persistence.entity.Customer;
 import org.springframework.stereotype.Component;
+
+import static com.example.leadmanagement.global_validator.GlobalValidator.isValidEmailGV;
+import static com.example.leadmanagement.global_validator.GlobalValidator.isValidPhoneGV;
 
 
 @Component
@@ -33,8 +37,21 @@ public class CustomerMapper implements ObjectMapper<CustomerDto, Customer> {
         Customer customer = new Customer();
         customer.setName(customerDto.getName());
         customer.setCity(customerDto.getCity());
-        customer.setPhone(customerDto.getPhone());
-        customer.setEmail(customerDto.getEmail());
+
+        String dtoEmail = customerDto.getEmail();
+        if (!isValidEmailGV(dtoEmail)) {
+            throw new InvalidDataException("Invalid email format: [" + dtoEmail
+                    + "]. Email should be x@x.x");
+        }
+        customer.setEmail(dtoEmail);
+
+        String dtoPhone = customerDto.getPhone();
+        if (!isValidPhoneGV(dtoPhone)) {
+            throw new InvalidDataException("Invalid phone format: [" + dtoPhone
+                    + "]. Phone must start with \"07\" and have 10 digits.");
+        }
+        customer.setPhone(dtoPhone);
+
 
         if (customerDto.getLoyaltyCard() != null) {
             customer.setLoyaltyCard(loyaltyCardMapper.mapToEntity(customerDto.getLoyaltyCard()));

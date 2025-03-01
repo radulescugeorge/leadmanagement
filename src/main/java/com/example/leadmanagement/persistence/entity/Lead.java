@@ -3,7 +3,9 @@ package com.example.leadmanagement.persistence.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -25,6 +27,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Table(name="leads") // It will create a table named "leads" in database
+@AllArgsConstructor
+@NoArgsConstructor
 public class Lead {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

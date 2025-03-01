@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -16,6 +18,8 @@ import java.util.List;
 @Setter
 @Table(name="customers") //It will create a Table named "customers" in database.
 @JsonIgnoreProperties("leads")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Customer {
 
 

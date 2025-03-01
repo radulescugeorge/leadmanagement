@@ -8,6 +8,11 @@
 <div class="container mt-5">
     <h2>Add New Customer</h2>
     <form th:action="@{/customers/save}" method="post" th:object="${customer}">
+
+        <div th:if="${error}" class="alert alert-danger">
+            <p th:text="${error}">Error message</p>
+        </div>
+
         <div class="mb-3">
             <label class="form-label">Customer Name</label>
             <input type="text" class="form-control" th:field="*{name}" required>

@@ -2,6 +2,7 @@ package com.example.leadmanagement.controller_ui;
 
 import com.example.leadmanagement.dto.CustomerDto;
 import com.example.leadmanagement.dto.LoyaltyCardDto;
+import com.example.leadmanagement.exception_handlers.InvalidDataException;
 import com.example.leadmanagement.persistence.entity.Customer;
 import com.example.leadmanagement.service.CustomerService;
 import org.springframework.stereotype.Controller;
@@ -35,9 +36,16 @@ public class CustomerUIController {
     }
 
     @PostMapping("/save")
-    public String saveCustomer(@ModelAttribute CustomerDto customerDto){
-        customerService.createCustomerWithLoyaltyCard(customerDto);
-        return "redirect:/customers";
+    public String saveCustomer(@ModelAttribute CustomerDto customerDto,
+                               Model model){
+        try {
+            customerService.createCustomerWithLoyaltyCard(customerDto);
+            return "redirect:/customers";
+        } catch (InvalidDataException e){
+            model.addAttribute("error",e.getMessage());
+            model.addAttribute("customer", customerDto);
+            return "add-customer";
+        }
     }
 
     @GetMapping("delete/{id}")
@@ -58,9 +66,16 @@ public class CustomerUIController {
     }
 
     @PostMapping("/update")
-    public String updateCustomer(@ModelAttribute CustomerDto customerDto){
-        customerService.updateCustomer(customerDto.getId(), customerDto);
-        return "redirect:/customers";
+    public String updateCustomer(@ModelAttribute CustomerDto customerDto,
+                                 Model model){
+        try {
+            customerService.updateCustomer(customerDto.getId(), customerDto);
+            return "redirect:/customers";
+        } catch (InvalidDataException e){
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("customer",customerDto);
+            return "edit-customer";
+        }
     }
 
     @GetMapping("/search")

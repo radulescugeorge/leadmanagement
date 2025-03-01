@@ -4,7 +4,6 @@ import com.example.leadmanagement.dto.LeadDto;
 import com.example.leadmanagement.dto.LeadViewDto;
 import com.example.leadmanagement.mapper.impl.LeadMapper;
 import com.example.leadmanagement.mapper.impl.LeadViewMapper;
-import com.example.leadmanagement.persistence.entity.Lead;
 import com.example.leadmanagement.persistence.repository.CustomerRepository;
 import com.example.leadmanagement.persistence.repository.ProductRepository;
 import com.example.leadmanagement.persistence.repository.SalesAgentRepository;
@@ -91,10 +90,9 @@ public class LeadUIController {
 
     @GetMapping("/search")
     public String searchLeadById(@RequestParam long id, Model model){
-        Lead lead = leadService.getLeadById(id);
-        LeadViewDto leadviewDto = leadViewMapper.mapToDto(lead);
+       List<LeadViewDto> leads = leadService.getAllViewLeadsById(id);
 
-        model.addAttribute("leads", List.of(leadviewDto));
+        model.addAttribute("leads", leads); //fixed the old list.of - generating errors.
         model.addAttribute("searchQuery", id);
         return "leads";
     }

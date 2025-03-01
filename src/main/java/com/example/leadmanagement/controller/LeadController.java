@@ -29,7 +29,7 @@ public class LeadController {
         return ResponseEntity.ok(leadService.getLeads());
     }
 
-    //CHECK THIS !!! i've changed from lead to LeadDTO.
+
     @GetMapping("/{id}")
     public ResponseEntity<LeadDto> getLeadById(@PathVariable long id) {
 
@@ -66,7 +66,7 @@ public class LeadController {
         return ResponseEntity.ok(leadService.updateLead(id, leadDto));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteLead(@PathVariable long id) {
         leadService.deleteLeadById(id);
     }

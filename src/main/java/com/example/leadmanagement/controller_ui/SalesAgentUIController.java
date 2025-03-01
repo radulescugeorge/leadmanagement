@@ -1,11 +1,13 @@
 package com.example.leadmanagement.controller_ui;
 
 import com.example.leadmanagement.dto.SalesAgentDto;
+import com.example.leadmanagement.exception_handlers.InvalidDataException;
 import com.example.leadmanagement.mapper.impl.SalesAgentMapper;
 import com.example.leadmanagement.service.SalesAgentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -35,9 +37,18 @@ public class SalesAgentUIController {
     }
 
     @PostMapping("/save")
-    public String saveSalesAgent(@ModelAttribute SalesAgentDto salesAgentDto){
-        salesAgentService.createSalesAgent(salesAgentDto);
-        return "redirect:/salesagents";
+    public String saveSalesAgent(@ModelAttribute("salesAgentDto") SalesAgentDto salesAgentDto,
+                                 RedirectAttributes redirectAttributes,
+                                 Model model){
+        try {
+            salesAgentService.createSalesAgent(salesAgentDto);
+            redirectAttributes.addFlashAttribute("succes","Sales Agent saved successfully");
+            return "redirect:/salesagents";
+        } catch (InvalidDataException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("salesAgent", salesAgentDto);
+            return "redirect:/salesagents/add";
+        }
     }
 
     @GetMapping("/delete/{id}")
@@ -57,9 +68,16 @@ public class SalesAgentUIController {
     }
 
     @PostMapping("/update")
-    public String updateSalesAgent(@ModelAttribute SalesAgentDto salesAgentDto){
-        salesAgentService.updateSalesAgent(salesAgentDto.getId(), salesAgentDto);
-        return "redirect:/salesagents";
+    public String updateSalesAgent(@ModelAttribute SalesAgentDto salesAgentDto,
+                                   Model model){
+        try {
+            salesAgentService.updateSalesAgent(salesAgentDto.getId(), salesAgentDto);
+            return "redirect:/salesagents";
+        } catch(InvalidDataException e){
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("salesAgent", salesAgentDto);
+            return "edit-agent";
+        }
     }
 
     @GetMapping("/search")

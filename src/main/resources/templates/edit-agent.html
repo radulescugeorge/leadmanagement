@@ -7,8 +7,12 @@
 <body class="container mt-5">
 <h1 class="mb-4 text-center">Edit Sales Agent</h1>
 
+<div th:if="${error}" class="alert alert-danger">
+    <p th:text="${error}">Error message</p>
+</div>
+
 <form th:action="@{/salesagents/update}" method="post" th:object="${salesAgent}" class="card p-4 shadow">
-    <input type="hidden" th:field="*{id}" />
+    <input type="hidden" th:field="*{id}"/>
 
     <div class="mb-3">
         <label class="form-label">Name:</label>

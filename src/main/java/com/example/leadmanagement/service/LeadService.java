@@ -87,6 +87,12 @@ public class LeadService {
                 .toList();
     }
 
+    public List<LeadViewDto> getAllViewLeadsById(Long id){
+        return leadRepository.findById(id).stream()
+                .map(leadViewMapper::mapToDto)
+                .toList();
+    }
+
 
     public List<LeadViewDto> getAllViewLeadsByDate(LocalDate date) {
         return leadRepository.findByDate(date).stream()
@@ -236,6 +242,4 @@ public class LeadService {
         Lead newLead = leadViewMapper.mapToEntity(leadViewDto);
         return leadViewMapper.mapToDto(leadRepository.save(newLead));
     }
-
-
 }
