@@ -4,6 +4,7 @@ import com.example.leadmanagement.dto.LeadDto;
 import com.example.leadmanagement.mapper.impl.LeadMapper;
 import com.example.leadmanagement.persistence.entity.Lead;
 import com.example.leadmanagement.service.LeadService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -35,7 +36,7 @@ public class LeadController {
 
         Lead lead = leadService.getLeadById(id);
         if (lead == null) {
-            return ResponseEntity.notFound().build();
+            throw new EntityNotFoundException("Lead not found. ID=" + id);
         }
 
         LeadDto leadDto = leadMapper.mapToDto(lead);
@@ -73,14 +74,16 @@ public class LeadController {
 
     @GetMapping("/salesagent/{salesAgentId}")
     public List<LeadDto> getAllLeadsBySalesAgent(@PathVariable long salesAgentId) {
-        return  leadService.getAllLeadsBySalesAgent(salesAgentId);
+        return leadService.getAllLeadsBySalesAgent(salesAgentId);
     }
+
     @GetMapping("/customer/{customerId}")
-    public List<LeadDto> getAllLeadsByCustomer(@PathVariable long customerId){
+    public List<LeadDto> getAllLeadsByCustomer(@PathVariable long customerId) {
         return leadService.getAllLeadsByCustomer(customerId);
     }
+
     @GetMapping("/product/{productId}")
-    public ResponseEntity <List<LeadDto>> getAllLeadsByProduct(@PathVariable long productId){
+    public ResponseEntity<List<LeadDto>> getAllLeadsByProduct(@PathVariable long productId) {
         return ResponseEntity.ok(leadService.getAllLeadsByProduct(productId));
     }
 

@@ -2,7 +2,9 @@ package com.example.leadmanagement.controller;
 
 import com.example.leadmanagement.dto.CustomerDto;
 import com.example.leadmanagement.mapper.impl.CustomerMapper;
+import com.example.leadmanagement.persistence.entity.Customer;
 import com.example.leadmanagement.service.CustomerService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,11 +30,11 @@ public class CustomerController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CustomerDto> getCustomerById(@PathVariable long id) {
-        CustomerDto customerDtoById = customerMapper
-                .mapToDto(customerService.getCustomerById(id));
-        if (customerDtoById == null) {
-            return ResponseEntity.notFound().build();
+        Customer customer = customerService.getCustomerById(id);
+        if(customer==null){
+            throw new EntityNotFoundException("Customer not found with ID="+id);
         }
+        CustomerDto customerDtoById = customerMapper.mapToDto(customer);
         return ResponseEntity.ok(customerDtoById);
     }
 

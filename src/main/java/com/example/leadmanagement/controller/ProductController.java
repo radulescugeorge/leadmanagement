@@ -2,7 +2,9 @@ package com.example.leadmanagement.controller;
 
 import com.example.leadmanagement.dto.ProductDto;
 import com.example.leadmanagement.mapper.impl.ProductMapper;
+import com.example.leadmanagement.persistence.entity.Product;
 import com.example.leadmanagement.service.ProductService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,10 +30,11 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProductsById(@PathVariable long id){
-        ProductDto productDtoById = productMapper.mapToDto(productService.getProductById(id));
-        if(productDtoById == null){
-            return ResponseEntity.notFound().build();
+        Product product = productService.getProductById(id);
+        if(product == null){
+            throw new EntityNotFoundException("Product not found. ID="+id);
         }
+        ProductDto productDtoById = productMapper.mapToDto(product);
         return ResponseEntity.ok(productDtoById);
     }
 
