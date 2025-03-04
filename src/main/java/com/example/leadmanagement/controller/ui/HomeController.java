@@ -1,4 +1,4 @@
-package com.example.leadmanagement.controller_ui;
+package com.example.leadmanagement.controller.ui;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

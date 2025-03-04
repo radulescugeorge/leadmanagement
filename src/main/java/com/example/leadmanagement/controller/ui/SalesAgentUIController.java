@@ -1,7 +1,7 @@
-package com.example.leadmanagement.controller_ui;
+package com.example.leadmanagement.controller.ui;
 
 import com.example.leadmanagement.dto.SalesAgentDto;
-import com.example.leadmanagement.exception_handlers.InvalidDataException;
+import com.example.leadmanagement.exceptionhandlers.InvalidDataException;
 import com.example.leadmanagement.mapper.impl.SalesAgentMapper;
 import com.example.leadmanagement.service.SalesAgentService;
 import org.springframework.stereotype.Controller;

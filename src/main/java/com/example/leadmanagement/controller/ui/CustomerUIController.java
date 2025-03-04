@@ -1,8 +1,8 @@
-package com.example.leadmanagement.controller_ui;
+package com.example.leadmanagement.controller.ui;
 
 import com.example.leadmanagement.dto.CustomerDto;
 import com.example.leadmanagement.dto.LoyaltyCardDto;
-import com.example.leadmanagement.exception_handlers.InvalidDataException;
+import com.example.leadmanagement.exceptionhandlers.InvalidDataException;
 import com.example.leadmanagement.persistence.entity.Customer;
 import com.example.leadmanagement.service.CustomerService;
 import org.springframework.stereotype.Controller;

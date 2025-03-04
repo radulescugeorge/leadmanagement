@@ -45,7 +45,7 @@ public class ProductController {
 
     }
 
-    @PutMapping("/replace/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ProductDto> replaceProduct(@PathVariable long id,
                                                      @RequestBody ProductDto productDto){
 
@@ -58,7 +58,7 @@ public class ProductController {
 
     }
 
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable long id,
                                                     @RequestBody ProductDto productDto){
         ProductDto updatedProductDto = productService.updateProduct(id, productDto);
@@ -70,7 +70,7 @@ public class ProductController {
 
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable long id){
         productService.deleteProductById(id);
     }

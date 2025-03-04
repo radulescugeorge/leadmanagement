@@ -1,4 +1,4 @@
-package com.example.leadmanagement.controller_ui;
+package com.example.leadmanagement.controller.ui;
 
 import com.example.leadmanagement.dto.ProductDto;
 import com.example.leadmanagement.persistence.entity.Product;

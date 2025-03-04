@@ -44,13 +44,13 @@ public class CustomerController {
         return new ResponseEntity<>(savedCustomer, HttpStatus.CREATED);
     }
 
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<CustomerDto> updateCustomer(@PathVariable long id,
                                                       @RequestBody CustomerDto customerDto) {
         return ResponseEntity.ok(customerService.updateCustomer(id, customerDto));
     }
 
-    @PutMapping("/replace/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<CustomerDto> replaceCustomer(@PathVariable long id,
                                                        @RequestBody CustomerDto customerDto){
         if (customerDto.getName() == null ||
@@ -65,7 +65,7 @@ public class CustomerController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteCustomer(@PathVariable long id) {
         customerService.deleteCustomerById(id);
     }

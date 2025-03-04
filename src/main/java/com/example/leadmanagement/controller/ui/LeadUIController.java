@@ -1,8 +1,8 @@
-package com.example.leadmanagement.controller_ui;
+package com.example.leadmanagement.controller.ui;
 
 import com.example.leadmanagement.dto.LeadDto;
 import com.example.leadmanagement.dto.LeadViewDto;
-import com.example.leadmanagement.exception_handlers.InvalidDataException;
+import com.example.leadmanagement.exceptionhandlers.InvalidDataException;
 import com.example.leadmanagement.mapper.impl.LeadMapper;
 import com.example.leadmanagement.mapper.impl.LeadViewMapper;
 import com.example.leadmanagement.persistence.repository.CustomerRepository;

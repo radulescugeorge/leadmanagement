@@ -1,4 +1,4 @@
-package com.example.leadmanagement.exception_handlers;
+package com.example.leadmanagement.exceptionhandlers;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;

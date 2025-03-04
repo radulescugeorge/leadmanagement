@@ -1,13 +1,13 @@
 package com.example.leadmanagement.mapper.impl;
 
 import com.example.leadmanagement.dto.SalesAgentDto;
-import com.example.leadmanagement.exception_handlers.InvalidDataException;
+import com.example.leadmanagement.exceptionhandlers.InvalidDataException;
 import com.example.leadmanagement.mapper.ObjectMapper;
 import com.example.leadmanagement.persistence.entity.SalesAgent;
 import org.springframework.stereotype.Component;
 
-import static com.example.leadmanagement.global_validator.GlobalValidator.isValidEmailGV;
-import static com.example.leadmanagement.global_validator.GlobalValidator.isValidPhoneGV;
+import static com.example.leadmanagement.globalvalidator.GlobalValidator.isValidEmailGV;
+import static com.example.leadmanagement.globalvalidator.GlobalValidator.isValidPhoneGV;
 
 @Component
 public class SalesAgentMapper implements ObjectMapper<SalesAgentDto, SalesAgent> {

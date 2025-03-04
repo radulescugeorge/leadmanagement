@@ -1,7 +1,7 @@
 package com.example.leadmanagement.service;
 
 import com.example.leadmanagement.dto.CustomerDto;
-import com.example.leadmanagement.exception_handlers.InvalidDataException;
+import com.example.leadmanagement.exceptionhandlers.InvalidDataException;
 import com.example.leadmanagement.mapper.impl.CustomerMapper;
 import com.example.leadmanagement.mapper.impl.LoyaltyCardMapper;
 import com.example.leadmanagement.persistence.entity.Customer;
@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.example.leadmanagement.global_validator.GlobalValidator.isValidEmailGV;
-import static com.example.leadmanagement.global_validator.GlobalValidator.isValidPhoneGV;
+import static com.example.leadmanagement.globalvalidator.GlobalValidator.isValidEmailGV;
+import static com.example.leadmanagement.globalvalidator.GlobalValidator.isValidPhoneGV;
 
 @Service
 public class CustomerService {

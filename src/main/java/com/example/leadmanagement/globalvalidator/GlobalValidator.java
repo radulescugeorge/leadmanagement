@@ -1,4 +1,4 @@
-package com.example.leadmanagement.global_validator;
+package com.example.leadmanagement.globalvalidator;
 
 public class GlobalValidator {
 

@@ -2,7 +2,7 @@ package com.example.leadmanagement.service;
 
 import com.example.leadmanagement.dto.LeadDto;
 import com.example.leadmanagement.dto.LeadViewDto;
-import com.example.leadmanagement.exception_handlers.InvalidDataException;
+import com.example.leadmanagement.exceptionhandlers.InvalidDataException;
 import com.example.leadmanagement.mapper.impl.LeadMapper;
 import com.example.leadmanagement.mapper.impl.LeadViewMapper;
 import com.example.leadmanagement.persistence.entity.Customer;
@@ -20,7 +20,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.leadmanagement.global_validator.GlobalValidator.isQuantityValidGV;
+import static com.example.leadmanagement.globalvalidator.GlobalValidator.isQuantityValidGV;
 
 
 @Service

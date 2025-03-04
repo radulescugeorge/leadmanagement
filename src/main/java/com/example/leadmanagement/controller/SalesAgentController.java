@@ -47,7 +47,7 @@ public class SalesAgentController {
                 .body("New sales agent added. ");
     }
 
-    @PutMapping("/replace/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<SalesAgentDto> replaceSalesAgent(@PathVariable long id,
                                                            @RequestBody SalesAgentDto salesAgentDto) {
         SalesAgentDto replaceddSalesAgentDto = salesAgentService.updateSalesAgent(id, salesAgentDto);
@@ -58,7 +58,7 @@ public class SalesAgentController {
     }
 
 
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<SalesAgentDto> updateSalesAgent(@PathVariable long id,
                                                           @RequestBody SalesAgentDto salesAgentDto) {
         SalesAgentDto updatedSalesAgentDto = salesAgentService.updateSalesAgent(id, salesAgentDto);
@@ -68,7 +68,7 @@ public class SalesAgentController {
         return ResponseEntity.ok(updatedSalesAgentDto);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteSalesAgent(@PathVariable long id) {
         salesAgentService.deleteSalesAgentById(id);
     }

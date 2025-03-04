@@ -45,7 +45,7 @@ public class LeadController {
 
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<String> createLead(@RequestBody LeadDto leadDto) {
 
         leadService.createLead(leadDto);
@@ -54,20 +54,20 @@ public class LeadController {
 
     }
 
-    @PutMapping("/replace/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<LeadDto> replaceLead(@PathVariable long id,
                                                @RequestBody LeadDto leadDto) {
         return ResponseEntity.ok(leadService.replaceLead(id, leadDto));
     }
 
 
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<LeadDto> updateLead(@PathVariable long id,
                                               @RequestBody LeadDto leadDto) {
         return ResponseEntity.ok(leadService.updateLead(id, leadDto));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteLead(@PathVariable long id) {
         leadService.deleteLeadById(id);
     }
